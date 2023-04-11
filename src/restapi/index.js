@@ -1,16 +1,14 @@
 import axios from "axios";
-const key = "23b742318d6967818036cb509af011e4";
+
+const api_key = "23b742318d6967818036cb509af011e4";
 const URL = "https://api.themoviedb.org/3/";
 
-export async function read() {
+export async function read(fetchUrl) {
   try {
-    const response = await axios.get(
-      `${URL}/trending/all/day?api_key=${key}&page=${1}`
-    );
-
+    const response = await axios.get(`${URL}${fetchUrl}&api_key=${api_key}`);
     console.log("response", response);
     return {
-      sucess: true,
+      success: true,
       data: response.data,
     };
   } catch (err) {
@@ -29,8 +27,18 @@ export async function read() {
         message = "Unexpected error";
     }
     return {
-      sucess: false,
+      success: false,
       error: message,
     };
   }
 }
+
+export const requests = {
+  fetchNetflixOriginals: `/discover/tv?with_networks=213`,
+  fetchTrending: `/trending/all/week?language=en-US`,
+  fetchTopRated: `/movie/top_rated?language=en-US`,
+  fetchHorrorMovies: `/discover/movie?with_genres=27`,
+  fetchRomanceMovies: `/discover/movie?with_genres=10749`,
+  fetchDocumentaries: `/discover/movie?with_genres=99`,
+  fetchTv: `tv/66732?language=en-US `,
+};

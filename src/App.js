@@ -1,6 +1,9 @@
 import Nav from "./components/Nav";
 import Header from "./components/Header";
-import Row from "./components/Row";
+// import Row from "./components/Row";
+
+// import { requests } from "./restapi";
+import Movies from "./components/Movies/movies";
 
 function App() {
   return (
@@ -11,15 +14,13 @@ function App() {
       {/* Header */}
       <Header />
       {/* Header */}
-      {/* Row */}
-      <Row title="Netflix Originals" movieType="netflix-originals" />
-      <Row title="Trending Now" movieType="trending-now" />
-      <Row title="Top Rated" movieType="top-rated" />
-      <Row title="Action Movies" movieType="action-movies" />
-      <Row title="Horror Movies" movieType="horror-movies" />
-      <Row title="Romance Movies" movieType="romance-movies" />
-      <Row title="Documentaries Movies" movieType="documentaries-movies" />
-      {/* End Row */}
+
+      {/* <Row title="Trending" fetchUrl={requests.fetchTrending} />
+      <Row title="Top Rated" fetchUrl={requests.fetchTopRated} />
+      <Row title="Horror Movies" fetchUrl={requests.fetchHorrorMovies} />
+      <Row title="Romance Movies" fetchUrl={requests.fetchRomanceMovies} />
+      <Row title="Documentaries" fetchUrl={requests.fetchDocumentaries} /> */}
+      <Movies />
     </div>
   );
 }

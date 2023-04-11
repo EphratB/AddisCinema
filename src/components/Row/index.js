@@ -3,40 +3,38 @@ import * as restAPI from "../../restapi";
 
 import "./styles.scss";
 
-function Row(props) {
+function Row({ title, fetchUrl }) {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState("");
-  // const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(true);
 
-  //read the data from API
   useEffect(() => {
     (async () => {
-      const result = await restAPI.read();
-      // setLoading(true);
-      if (result.sucess) {
-        //do something
+      const result = await restAPI.read(fetchUrl);
+      setLoading(true);
+      if (result.success) {
         const movieList = result.data.results;
         setMovies(movieList);
-        //setLoading(false);
-        console.log("movies", movieList);
       } else {
         setError(result.error);
       }
-      // setLoading(false);
+      setLoading(false);
     })();
-  }, []);
+  }, [fetchUrl]);
 
   return (
     <div className="rowContainer">
-      <h2>Popular Movies</h2>
-
-      {error && error}
-      <div className="movieContainer">
-        {movies.length > 0 && (
+      <h2>{title}</h2>
+      {error && <p>{error}</p>}
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="movieContainer">
           <ul>
             {movies.map((movie) => (
               <li key={movie.id}>
                 {movie.title}
+
                 <img
                   src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
                   alt={movie.title}
@@ -46,9 +44,10 @@ function Row(props) {
               </li>
             ))}
           </ul>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
+
 export default Row;
