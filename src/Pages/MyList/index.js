@@ -17,6 +17,7 @@ function MyList({ movies }) {
                 <span className="movie-overview">{movie.overview}</span>
                 <div>
                   <button>Like</button>
+                  <button>DisLike</button>
                 </div>
               </div>
             </div>
