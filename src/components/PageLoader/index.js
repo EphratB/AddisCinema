@@ -1,11 +1,10 @@
 import React from "react";
 
-function PageLoader({ title, children }) {
+function PageLoader({ title }) {
   return (
-    <main className="page">
-      {title}
-      {children}
-    </main>
+    <div>
+      <h1>Page Loader</h1>
+    </div>
   );
 }
 

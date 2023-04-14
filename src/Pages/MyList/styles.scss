@@ -1,0 +1,38 @@
+.container {
+    .Mylist_text {
+      color: #FFF;
+      margin-left: 15px;
+      font-size: 16px;
+    }
+    h1 {
+      color: #FFF;
+      margin-left: 5px;
+    }
+    .Mylist_container {
+      height: 100%;
+    }
+    .Mylist_detail {
+        color: #FFF;
+      display: flex;
+      overflow-y: hidden;
+     
+      padding: 20px;
+    }
+    img {
+      width: 100px; /* Set thumbnail size here */
+    }
+    .movie-details {
+      display: flex;
+      flex-direction: column;
+      margin-left: 10px;
+    }
+    .movie-title {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .movie-overview {
+      font-size: 14px;
+    }
+  }
+  
+  
