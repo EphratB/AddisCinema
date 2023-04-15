@@ -21,7 +21,7 @@ function Banner() {
           Math.floor(Math.random() * request.data.results.length - 1)
         ]
       );
-      console.log("movie", movie);
+      // console.log("movie", movie);
       return request;
     })();
   }, []);

@@ -36,6 +36,30 @@ button{
   background-color: #111;
   color:white;
 }
+.my-list-btn {
+  display: inline-block;
+  position: relative;
+}
+
+.my-list-btn p {
+  display: inline-block;
+  margin: 0;
+  padding-right: 20px;
+  font-size:15px;
+  color: white;
+}
+
+.my-list-btn > svg {
+  position: absolute;
+  top: 70%;
+  right:10;
+  transform: translateY(-50%);
+  fill: #FFF !important;
+  width: 3em;
+  height: 1.5em;
+  cursor: pointer;
+}
+
 
 @media only screen and (max-width: 768px) {
   .row__poster {

@@ -6,7 +6,7 @@ const URL = "https://api.themoviedb.org/3/";
 export async function read(fetchUrl) {
   try {
     const response = await axios.get(`${URL}${fetchUrl}&api_key=${api_key}`);
-    console.log("response", response);
+    // console.log("response", response);
     return {
       success: true,
       data: response.data,

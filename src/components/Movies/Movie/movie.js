@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import * as restAPI from "../../.././restapi";
 import "./styles.scss";
+import * as database from "./../../.././database";
 
 import YouTube from "react-youtube";
 import movieTrailer from "movie-trailer";
-import { MdTaskAlt } from "react-icons/md";
-import { AiOutlinePlaySquare } from "react-icons/ai";
-import MyList from "../../../Pages/MyList";
+import { GrAddCircle } from "react-icons/gr";
+import { GrCheckmark } from "react-icons/gr";
 
 function Movie({
   title,
@@ -19,6 +19,8 @@ function Movie({
   const [movies, setMovies] = useState([]);
   const [trailerUrl, setTrailerUrl] = useState("");
   const [error, setError] = useState("");
+  const [addedToList, setAddedToList] = useState(false);
+  const [isMovieAlreadyAdded, setIsMovieAlreadyAdded] = useState(false);
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,10 +40,12 @@ function Movie({
     height: "390",
     width: "100%",
     playerVars: {
-      // https://developers.google.com/youtube/player_parameters
       autoplayer: 1,
     },
   };
+
+  // fucntion that handles to show the movie trailer
+
   const handleClick = (movie) => {
     if (trailerUrl) {
       setTrailerUrl("");
@@ -54,13 +58,38 @@ function Movie({
         .catch((error) => console.log(error));
     }
   };
-  const handleClickk = (movie) => {
+  const handleAddToList = async (movie) => {
+    setIsMovieAlreadyAdded("");
+    const { title, id, vote_average, backdrop_path } = movie;
+
+    // check if movie with same ID already exists in database
+
+    const existingMovie = await database.get(id);
+    if (existingMovie) {
+      setIsMovieAlreadyAdded("Movie already exists in your list");
+
+      return;
+    }
+
     handleAddSelectedMovie(movie); // call handleAddSelectedMovie function
-    console.log("hello movies", movie);
+
+    //saving it to database
+    const savemovie = await database.save({
+      title,
+      id,
+      vote_average,
+      backdrop_path,
+    });
+    console.log("save me", savemovie);
+  };
+
+  const handleIconChange = () => {
+    setAddedToList(!addedToList);
   };
 
   return (
     <div className="row">
+      {movies.length !== 0 && <p>{isMovieAlreadyAdded}</p>}
       <h2>{title}</h2>
       <div className="row__posters">
         {movies.map((movie) => (
@@ -76,9 +105,23 @@ function Movie({
               }`}
               alt={movie.title}
             />
+
             <div className="controllers">
-              {/* <AiOutlinePlaySquare /> */}
-              <MdTaskAlt onClick={() => handleClickk(movie)} />
+              {title === "Trending" && (
+                <>
+                  <div
+                    className="my-list-btn"
+                    onClick={() => handleAddToList(movie)}
+                  >
+                    <p onClick={handleIconChange}>My List</p>
+                    {addedToList ? (
+                      <GrCheckmark className="my-list-btn" />
+                    ) : (
+                      <GrAddCircle className="my-list-btn" />
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         ))}
