@@ -5,8 +5,8 @@ import * as database from "./../../.././database";
 
 import YouTube from "react-youtube";
 import movieTrailer from "movie-trailer";
-import { GrAddCircle } from "react-icons/gr";
-import { GrCheckmark } from "react-icons/gr";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 
 function Movie({
   title,
@@ -19,14 +19,14 @@ function Movie({
   const [movies, setMovies] = useState([]);
   const [trailerUrl, setTrailerUrl] = useState("");
   const [error, setError] = useState("");
-  const [addedToList, setAddedToList] = useState(false);
-  const [isMovieAlreadyAdded, setIsMovieAlreadyAdded] = useState(false);
+  const [isMovieAlreadyAdded, setIsMovieAlreadyAdded] = useState("");
   const [isLoading, setLoading] = useState(true);
+  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const result = await restAPI.read(fetchUrl);
       setLoading(true);
+      const result = await restAPI.read(fetchUrl);
       if (result.success) {
         const movieList = result.data.results;
         setMovies(movieList);
@@ -36,6 +36,7 @@ function Movie({
       setLoading(false);
     })();
   }, [fetchUrl]);
+
   const opts = {
     height: "390",
     width: "100%",
@@ -58,138 +59,88 @@ function Movie({
         .catch((error) => console.log(error));
     }
   };
+
+  // adding to the Mylist
   const handleAddToList = async (movie) => {
-    setIsMovieAlreadyAdded("");
-    const { title, id, vote_average, backdrop_path } = movie;
+    const { title, id, vote_average, poster_path, backdrop_path, overview } =
+      movie;
 
     // check if movie with same ID already exists in database
 
     const existingMovie = await database.get(id);
     if (existingMovie) {
       setIsMovieAlreadyAdded("Movie already exists in your list");
-
       return;
+    } else {
+      setIsMovieAlreadyAdded("");
     }
 
-    handleAddSelectedMovie(movie); // call handleAddSelectedMovie function
-
     //saving it to database
-    const savemovie = await database.save({
+    const saveId = await database.save(movie);
+    movie.id = saveId;
+    console.log("save me", saveId);
+    setShowMessage(true);
+    setTimeout(() => setShowMessage(false), 1000);
+    handleAddSelectedMovie(
       title,
-      id,
       vote_average,
+      poster_path,
       backdrop_path,
-    });
-    console.log("save me", savemovie);
-  };
-
-  const handleIconChange = () => {
-    setAddedToList(!addedToList);
+      overview
+    ); // call handleAddSelectedMovie function
   };
 
   return (
     <div className="row">
-      {movies.length !== 0 && <p>{isMovieAlreadyAdded}</p>}
-      <h2>{title}</h2>
-      <div className="row__posters">
-        {movies.map((movie) => (
-          <div key={movie.id} className="movie_poster">
-            <img
-              onClick={() => handleClick(movie)}
-              className={`row__poster ${
-                isLargeRow ? "netflix__originals" : ""
-              } ${className}`}
-              src={`${imageUrl}${
-                movie.poster_path
-                // isLargeRow ? movie.backdrop_path : movie.poster_path
-              }`}
-              alt={movie.title}
-            />
-
-            <div className="controllers">
-              {title === "Trending" && (
-                <>
-                  <div
-                    className="my-list-btn"
-                    onClick={() => handleAddToList(movie)}
-                  >
-                    <p onClick={handleIconChange}>My List</p>
-                    {addedToList ? (
-                      <GrCheckmark className="my-list-btn" />
-                    ) : (
-                      <GrAddCircle className="my-list-btn" />
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-      {trailerUrl ? (
-        <YouTube videoId={trailerUrl} opts={opts} />
+      {isLoading ? (
+        <p>Loading...</p>
       ) : (
-        <p>{error}</p>
+        <>
+          {movies.length !== 0 && <p>{isMovieAlreadyAdded}</p>}
+          <h2>{title}</h2>
+          {showMessage && (
+            <p className="user_address">Movie added to your list!</p>
+          )}
+          <div className="row__posters">
+            {movies.map((movie) => (
+              <div key={movie.id} className="movie_poster">
+                <img
+                  onClick={() => handleClick(movie)}
+                  className={`row__poster ${
+                    isLargeRow ? "netflix__originals" : ""
+                  } ${className}`}
+                  // we sometimes dont get what we want from the API sometimes might be undefined
+                  // always render it conditionally
+                  src={
+                    movie.poster_path ? `${imageUrl}${movie.poster_path}` : ""
+                  }
+                  alt={movie.title}
+                />
+
+                <div className="controllers">
+                  {title === "Trending Add to Watchlist" && (
+                    <>
+                      <div
+                        className="my-list-btn"
+                        onClick={() => handleAddToList(movie)}
+                      >
+                        <FontAwesomeIcon icon={faPlusCircle} />
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          {trailerUrl ? (
+            <YouTube videoId={trailerUrl} opts={opts} />
+          ) : (
+            <p>{error}</p>
+          )}
+        </>
       )}
     </div>
   );
 }
 
 export default Movie;
-
-// import { useEffect, useState } from "react";
-// import * as restAPI from "../../.././restapi";
-// import "./styles.scss";
-
-// function Movie({ title, fetchUrl }) {
-//   const [movies, setMovies] = useState([]);
-//   const [error, setError] = useState("");
-//   const [isLoading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     (async () => {
-//       const result = await restAPI.read(fetchUrl);
-//       setLoading(true);
-//       if (result.success) {
-//         const movieList = result.data.results;
-//         setMovies(movieList);
-//       } else {
-//         setError(result.error);
-//       }
-//       setLoading(false);
-//     })();
-//   }, [fetchUrl]);
-
-//   return (
-//     //row
-//     <div className="MovieContainer">
-//       <h2>{title}</h2>
-//       {error && <p>{error}</p>}
-//       {isLoading ? (
-//         <p>Loading...</p>
-//       ) : (
-//         //row_posters
-//         <div className="movie_posters">
-//           <ul>
-//             {movies.map((movie) => (
-//               <li key={movie.id}>
-//                 {movie.title}
-//                 {/* row_poster */}
-//                 <div className="image_posters">
-//                   <img
-//                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-//                     alt={movie.title}
-//                   />
-//                 </div>
-
-//                 <button>Click me</button>
-//               </li>
-//             ))}
-//           </ul>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default Movie;

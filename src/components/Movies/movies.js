@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import Movie from "./Movie/movie";
 import { requests } from "../../restapi";
+import AuthContext from "../../AuthContext";
 
 function Movies({ handleAddSelectedMovie }) {
+  const { isAuthenticated } = useContext(AuthContext);
+
+  if (!isAuthenticated) {
+    return <div>Please sign In</div>;
+  }
   return (
     <div>
       <Movie
@@ -12,7 +18,7 @@ function Movies({ handleAddSelectedMovie }) {
         className="netflix__originals"
       />
       <Movie
-        title="Trending"
+        title="Trending Add to Watchlist"
         fetchUrl={requests.fetchTrending}
         handleAddSelectedMovie={handleAddSelectedMovie}
       />

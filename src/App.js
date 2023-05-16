@@ -1,89 +1,92 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Nav from "./components/Nav";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import { Routes, Route } from "react-router-dom";
-// import Row from "./components/Row";
-// import { requests } from "./restapi";
+import { requests } from "./restapi";
 import Movies from "./components/Movies/movies";
 import PageNotFound from "./Pages/PageNotFound";
-import PageLoader from "./components/PageLoader";
-import MyList from "./Pages/MyList";
-// import {db} from "./database/config";
-import * as database from "./database";
+import SignIn from "./components/Auth/signIn";
+import SignUp from "./components/Auth/signUp";
 import TvShows from "./Pages/TvShows";
+import PopularTvShowsPage from "./Pages/TvShows/PopularTvShowsPage";
+import AiringTodayPage from "./Pages/TvShows/AiringTodayPage";
+import TopRatedPage from "./Pages/TvShows/TopRatedPage";
+import ShowDetailsPage from "./Pages/ShowDetailsPage";
+import MyList from "./Pages/MyList";
+import AuthContext from "./AuthContext";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [movies, setSelectedMovies] = useState([]);
-
-  const AddSelectedMovie = (movie) => {
-    setSelectedMovies([...movies, movie]);
-  };
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("isAuthenticated") === "true"
+  );
 
   useEffect(() => {
-    // load the database
+    localStorage.setItem("isAuthenticated", isAuthenticated);
+  }, [isAuthenticated]);
 
-    // IIFE immediately Invoked fucntion expression
+  const authenticateUser = () => {
+    // Simulating authentication
+    setIsAuthenticated(true);
+  };
 
-    (async () => {
-      const data = await database.load();
-      console.log("Loading database", data);
-      //seting data from database
-      setSelectedMovies(data);
-      setIsLoading(false);
-    })();
-  }, []);
+  const logoutUser = () => {
+    // Simulating logout
+    setIsAuthenticated(false);
+  };
+
   return (
     <div className="app">
-      {isLoading ? (
-        <PageLoader />
-      ) : (
+      <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+        <Nav />
+        <Header />
         <Routes>
           <Route
-            path="/"
-            element={
-              <>
-                <Nav />
-                <Header />
-                <Movies handleAddSelectedMovie={AddSelectedMovie} />
-                <Footer />
-              </>
-            }
+            path="/signin"
+            element={<SignIn setIsAuthenticated={setIsAuthenticated} />}
           />
-          <Route
-            path="/mylist"
-            element={
-              <>
-                <Nav />
-                <Header />
-                <MyList movies={movies} />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/tvshows"
-            element={
-              <>
-                <Nav />
-                <Header />
-                <TvShows />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <>
-                <Nav />
-                <PageNotFound />
-              </>
-            }
-          />
+          <Route path="/signup" element={<SignUp />} />
+          {isAuthenticated ? (
+            <>
+              <Route path="/movies/:id" element={<Movies />} />
+              <Route path="/mylist" element={<MyList />} />
+              <Route path="/mylist/:id" element={<ShowDetailsPage />} />
+              <Route path="/tvshows/*" element={<TvShows />} />
+              <Route
+                path="/tvshows/popular"
+                element={
+                  <PopularTvShowsPage
+                    title="Popular TV Shows"
+                    fetchUrl={requests.popularTvShows}
+                  />
+                }
+              />
+              <Route
+                path="/tvshows/toprated"
+                element={
+                  <TopRatedPage
+                    title="Top Rated TV Shows"
+                    fetchUrl={requests.topRated}
+                  />
+                }
+              />
+              <Route
+                path="/tvshows/airingtoday"
+                element={
+                  <AiringTodayPage
+                    title="Currently Airing TV Shows"
+                    fetchUrl={requests.airingToday}
+                  />
+                }
+              />
+            </>
+          ) : (
+            <Route path="/*" element={<Navigate to="/signin" replace />} />
+          )}
+          <Route path="/*" element={<PageNotFound />} />
         </Routes>
-      )}
+        <Footer />
+      </AuthContext.Provider>
     </div>
   );
 }

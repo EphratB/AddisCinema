@@ -41,10 +41,10 @@ function Banner() {
         </h1>
       </div>
 
-      <div className="banner_buttons">
+      {/* <div className="banner_buttons">
         <button className="banner_button">Play</button>
         <button className="banner_button">My List</button>
-      </div>
+      </div> */}
       <h1 className="banner_description">{movie?.overview}</h1>
       <div className="banner_fadeBottom"></div>
     </div>

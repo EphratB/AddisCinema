@@ -6,7 +6,7 @@ const URL = "https://api.themoviedb.org/3/";
 export async function read(fetchUrl) {
   try {
     const response = await axios.get(`${URL}${fetchUrl}&api_key=${api_key}`);
-    // console.log("response", response);
+
     return {
       success: true,
       data: response.data,
@@ -40,5 +40,7 @@ export const requests = {
   fetchHorrorMovies: `/discover/movie?with_genres=27`,
   fetchRomanceMovies: `/discover/movie?with_genres=10749`,
   fetchDocumentaries: `/discover/movie?with_genres=99`,
-  fetchTv: `tv/66732?language=en-US `,
+  popularTvShows: `/tv/popular?language=en-US&page=1 `,
+  topRated: `/tv/top_rated?language=en-US&page=1`,
+  airingToday: `/tv/airing_today?language=en-US&page=1&timezone=America/New_York`,
 };

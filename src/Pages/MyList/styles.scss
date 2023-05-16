@@ -81,7 +81,7 @@
   .rating-circle svg {
     width: 4em;
     height: 4em;
-    fill: #e50914;
+    fill: #017562;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -96,5 +96,28 @@
     transform: translate(-70%, -70%);
     font-size: 0.8em;
     font-weight: bold;
+  }
+  
+
+
+  .delete_watched {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
+  
+  .delete_watched svg {
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  
+  .delete_watched svg:hover {
+    fill: #e50914;
   }
   

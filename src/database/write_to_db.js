@@ -1,6 +1,15 @@
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "./config";
 
+// saving movies to database
 export async function save(data) {
   console.log("Data to be saved:", data);
   try {
@@ -13,10 +22,24 @@ export async function save(data) {
   }
 }
 
+// getting specific movie with id
 export async function get(id) {
   const querySnapshot = await getDocs(
     query(collection(db, "movies"), where("id", "==", id))
   );
   const movies = querySnapshot.docs.map((doc) => doc.data());
   return movies.length > 0 ? movies[0] : null;
+}
+
+//remove movie from database
+export async function remove(id) {
+  console.log("write.js", id);
+  try {
+    await deleteDoc(doc(db, "movies", id));
+    console.log("Movie deleted successfully!");
+    return true;
+  } catch {
+    console.log("Failed to delete movie.");
+    return false;
+  }
 }

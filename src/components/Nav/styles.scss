@@ -16,7 +16,8 @@
       justify-content: center;
       margin: 0 30px;
     }
-
+   
+    
     
     // styling for mobile and smaller screen
     @media screen and (max-width: 460px) {
@@ -38,7 +39,7 @@
         }
     }
       .nav_logo {
-        margin-bottom: 10px;
+        margin-top: 20px;
         font-size: 1.8rem;
         font-family: 'Bebas Neue', cursive;
         color: #e50914;
@@ -49,7 +50,7 @@
     @media screen and (min-width: 461px) and (max-width: 768px) {
       height: 60px;
       padding: 0 20px;
-      font-size: 18px;
+      font-size: 14px;
       a {
         color: #FFF;
         text-decoration: none;
@@ -74,7 +75,7 @@
     @media screen and (min-width: 769px) {
       height: 60px;
       padding: 0 20px;
-      font-size: 20px;
+      font-size: 16px;
       a {
         color: #FFF;
         text-decoration: none;
